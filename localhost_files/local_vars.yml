@@ -1,0 +1,11 @@
+# For namenode configuration
+design1: "/root/tasks/localhost_files/namenode_design.py"
+
+# For datanode configuration
+design2: "/root/tasks/localhost_files/datanode_design.py"
+
+# For client node configuration
+design3: "/root/tasks/localhost_files/client_design.py"
+
+# Greetings design
+design4: "/root/tasks/localhost_files/last_design.py"

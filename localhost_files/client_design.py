@@ -7,8 +7,6 @@ print("""
 
                                   Welcome to the Hadoop cluster world !!
 
-
-
- """)
+""")
 print(l)
 

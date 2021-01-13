@@ -1,0 +1,169 @@
+- hosts: 127.0.0.1
+  vars_files:
+    - /root/tasks/localhost_files/local_vars.yml
+  tasks:
+  - name: "Checking Controller node"
+    shell: "python3 {{design1}}"
+    register: design1
+  - debug:
+      var: design1.stdout_lines
+   
+- name: Configuring master node 
+  vars_files:
+    - /root/tasks/namenode_files/namenode_variables.yml
+  hosts: master
+  tasks:
+  - name: "Copying Hadoop & JDK softwares in master"
+    copy: 
+      dest: "/root"
+      src: /root/tasks/{{item}}
+    with_items:
+    - "{{hadoop_software}}"
+    - "{{jdk_software}}"
+  
+  - name: "Installing Hadoop"
+    command: "{{install_hadoop}}"
+  - name: "Installing JDK"
+    command: "{{install_jdk}}" 
+  - name: "Uploading Hadoop Master Config files"    
+    template: 
+      dest: "{{namenode_dest}}"
+      src: "{{namenode_source}}/{{item}}"
+    with_items:
+    - "{{file1}}"
+    - "{{file2}}"
+  - name: "Creating directory"
+    file:
+      path: "{{namenode_dest}}/nn"
+      state: directory
+  - name: "Formatting the directory"
+    command: "{{format_namenode}}"
+  - name: "Checking Firewall"
+    command: "{{disable_firewall}}"
+  - name: "Checking namenode health"
+    command: "{{stop_namenode}}"
+    ignore_errors: yes
+  - name: "Starting the namenode"
+    command: "{{start_namenode}}"
+  - name: "Retrieving namenode process status"
+    shell: "{{jps_namenode}}"
+    register: status_check1
+  - name: "Showing process status"
+    debug:
+      var: status_check1.stdout
+ 
+- hosts: 127.0.0.1
+  vars_files:
+    - /root/tasks/localhost_files/local_vars.yml
+  tasks:
+  - name: "Checking datanode"
+    shell: "python3 {{design2}}"
+    register: design2
+  - debug:
+      var: design2.stdout_lines         
+
+- name: "Configuring datanode"  
+  vars_files:
+  - /root/tasks/datanode_files/datanode_variables.yml
+  hosts: slave
+  tasks:
+  - name: "Copying Hadoop & JDK softwares in Datanode" 
+    copy: 
+      dest: "/root"
+      src: /root/tasks/{{item}}
+    with_items:
+    - "{{hadoop_software}}"
+    - "{{jdk_software}}"
+   
+  - name: "Installing Hadoop"
+    command: "{{install_hadoop}}"
+  - name: "Installing JDK"
+    command: "{{install_jdk}}" 
+ 
+  - name: "Uploading Hadoop Datanode Config files"    
+    template: 
+      dest: "{{datanode_dest}}"
+      src: "{{datanode_source}}/{{item}}"
+    with_items:
+    - "{{file1}}"
+    - "{{file2}}"
+  - name: "Creating directory"
+    file:
+      path: "{{datanode_dest}}/dn"
+      state: directory
+  - name: "Checking datanode health"
+    command: "{{stop_datanode}}"
+    ignore_errors: yes
+  - name: "Checking Firewall"
+    command: "{{disable_firewall}}"
+  - name: "Starting the datanode"
+    command: "{{start_datanode}}"
+  - name: "Retrieving datanode process status"
+    shell: "{{jps_datanode}}"
+    register: status_check2
+  - name: "Showing process status"
+    debug:
+      var: status_check2.stdout
+
+- hosts: 127.0.0.1
+  vars_files:
+    - /root/tasks/localhost_files/local_vars.yml
+  tasks:
+  - name: "Checking client node"
+    shell: "python3 {{design3}}"
+    register: design3
+    ignore_errors: yes
+  - debug:
+      var: design3.stdout_lines
+
+- name: "Configuring client node" 
+  vars_files:
+    - /root/tasks/client_files/client_variables.yml
+  hosts: client
+  tasks:
+  - name: "Copying Hadoop & JDK softwares in client"
+    copy: 
+      dest: "/root"
+      src: /root/tasks/{{item}}
+    with_items:
+    - "{{hadoop_software}}"
+    - "{{jdk_software}}"
+  
+  - name: "Installing Hadoop"
+    command: "{{install_hadoop}}"
+  
+  - name: "Installing JDK"
+    command: "{{install_jdk}}" 
+  
+  - name: "Uploading Hadoop client Config files"    
+    template: 
+      dest: "{{client_dest}}"
+      src: "{{client_source}}/{{file1}}"
+  
+  - name: "Checking files"
+    command: "{{remove_files}}"
+    ignore_errors: yes
+  
+  - name: "Checking Firewall"
+    command: "{{disable_firewall}}"
+  
+  - name: Uploading some files in client
+    copy:
+      dest: "/root"
+      src: "{{client_source}}/deploy.txt"
+  - name: "Uploading the file in cluster"
+    shell: "{{upload_files}}"
+
+
+- hosts: 127.0.0.1
+  vars_files:
+    - /root/tasks/localhost_files/local_vars.yml
+  tasks:
+  - name: "Final Check"
+    shell: "python3 {{design4}}"
+    register: design4
+  - debug:
+      var: design4.stdout_lines
+
+  
+

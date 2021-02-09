@@ -1,6 +1,8 @@
 # *Ansible-Hadoop_Hdfscluster*
 ![Automation](https://miro.medium.com/max/960/0*bCdvSUTWjFfDLAka.gif)
 
+
+#### **Watch full implemetaion video** [here](https://youtu.be/_TSP-7KW1es)
 #### **Requirements:** 
 > * VM [RHEL8](https://drive.google.com/file/d/1nZVXCVOy41LjAyOAiHMcNgFIwUlJYw16/view) installed on top of [Virtual Box](https://www.virtualbox.org/wiki/Downloads)
 > * [Configure Yum](https://www.fosslinux.com/6749/setup-local-yum-server-on-centos-7-guide.htm)
